@@ -1,4 +1,4 @@
-from odoo.tests import common, new_test_user
+from odoo.tests import common
 
 
 class TestFleet(common.TransactionCase):
@@ -38,4 +38,8 @@ class TestFleet(common.TransactionCase):
         self.vehicle.update({"color":  "Blue"})
         print(self.vehicle.color)
 
-        self.assertEqual(self.vehicle.color, "Blue", "Model color does not match")
+        self.assertEqual(self.vehicle.color, "Blue", "Vehicle color did not update")
+
+    def tearDown(self):
+        """ This method is run after each test """
+        super(TestFleet, self).tearDown()
