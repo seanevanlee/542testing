@@ -24,7 +24,7 @@ class TestPatient(TransactionCase):
             'gender': 'other'
         })
 
-        # create 3 appointments for John Test patient with Doc Brown
+        # create 2 appointments for John Test patient with Doc Brown
         cls.appointment_1 = cls.env['hospital.appointment'].create({
             'patient_id': cls.patient.id,
             'doctor_id': cls.doctor.id,
@@ -50,7 +50,7 @@ class TestPatient(TransactionCase):
     
     def test_appointment_count(self):
         """Test that amount of appointments for patient is 2 with compute function"""
-        self.assertEqual(self.patient.appointment_count, 2, "Appointment count should be 3")
+        self.assertEqual(self.patient.appointment_count, 2, "Appointment count should be 2")
 
     def test_unlink_error(self):
         """Test that an error throws if appointment is attempted to be deleted while in done state"""
