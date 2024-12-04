@@ -1,7 +1,5 @@
-from xlwt.ExcelFormulaLexer import false_pattern
-
 from odoo.tests import common
-from datetime import date, datetime
+from datetime import date
 
 
 class TestFleet(common.TransactionCase):
@@ -18,7 +16,7 @@ class TestFleet(common.TransactionCase):
             "name": "Toyota",
         })
 
-        vehicle = self.env['fleet.vehicle'].create({
+        self.vehicle = self.env['fleet.vehicle'].create({
             "id": "12345",
             "model_id": "1",
             "driver_id": self.driver.id
@@ -26,7 +24,7 @@ class TestFleet(common.TransactionCase):
 
         self.brand_name = brand.name
 
-        self.vehicle = self.env["fleet.vehicle.model"].create({
+        self.vehicle_model = self.env["fleet.vehicle.model"].create({
             "brand_id": brand.id,
             "name": "Prius",
             "color": "Red",
@@ -35,34 +33,34 @@ class TestFleet(common.TransactionCase):
         })
 
         self.contract_date = self.env["fleet.vehicle.log.contract"].create({
-            "vehicle_id": vehicle.id,
+            "vehicle_id": self.vehicle.id,
             "start_date": date(2022, 4, 30),
             "expiration_date": date(2024, 8, 30),
         })
 
         self.odometer = self.env['fleet.vehicle.odometer'].create({
-            'vehicle_id': vehicle.id,
+            'vehicle_id': self.vehicle.id,
             'value': 1000,
         })
 
         self.odometer2 = self.env['fleet.vehicle.odometer'].create({
-            'vehicle_id': vehicle.id,
+            'vehicle_id': self.vehicle.id,
             'value': 980,
         })
 
     def test_vehicle_model(self):
         # msg print only if returns False
-        self.assertIsNotNone(self.vehicle.brand_id, "Brand name is missing")
+        self.assertIsNotNone(self.vehicle_model.brand_id, "Brand name is missing")
         self.assertEqual(self.brand_name, "Toyota", "Brand name does not match")
-        self.assertEqual(self.vehicle.name, "Prius", "Model name does not match")
-        self.assertEqual(self.vehicle.color, "Red", "Model color does not match")
-        self.assertEqual(self.vehicle.horsepower, 200, "Model horsepower does not match")
-        self.assertEqual(self.vehicle.seats, 5, "Model seats does not match")
+        self.assertEqual(self.vehicle_model.name, "Prius", "Model name does not match")
+        self.assertEqual(self.vehicle_model.color, "Red", "Model color does not match")
+        self.assertEqual(self.vehicle_model.horsepower, 200, "Model horsepower does not match")
+        self.assertEqual(self.vehicle_model.seats, 5, "Model seats does not match")
 
     def test_vehicle_update(self):
-        self.vehicle.write({"color": "Blue"})
+        self.vehicle_model.write({"color": "Blue"})
 
-        self.assertEqual(self.vehicle.color, "Blue", "Vehicle color did not update")
+        self.assertEqual(self.vehicle_model.color, "Blue", "Vehicle color did not update")
 
     def test_compute_contract_reminder(self):
         self.overdue = False
@@ -84,11 +82,26 @@ class TestFleet(common.TransactionCase):
     def test_assign_driver(self):
         # Check if the driver is correctly assigned
         self.assertEqual(
-            self.env['fleet.vehicle'].driver_id,
-            self.driver,
-            "The driver should be correctly assigned to the vehicle."
+            int(self.vehicle.driver_id),
+            self.driver.id,
+            "The driver did not get assigned to the vehicle correctly."
         )
 
+        # Check if the new driver is correctly assigned
+        self.new_driver = self.env['res.partner'].create({
+            'name': 'New Test Driver',
+            'email': 'new_driver@example.com',
+        })
+
+        self.vehicle.write({
+            "driver_id": self.new_driver.id,
+        })
+
+        self.assertEqual(
+            int(self.vehicle.driver_id),
+            self.new_driver.id,
+            "The new driver did not get assigned to the vehicle correctly."
+        )
 
 def tearDown(self):
     super(TestFleet, self).tearDown()
