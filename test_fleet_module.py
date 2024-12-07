@@ -45,7 +45,7 @@ class TestFleet(common.TransactionCase):
 
         self.odometer2 = self.env['fleet.vehicle.odometer'].create({
             'vehicle_id': self.vehicle.id,
-            'value': 980,
+            'value': 1200,
         })
 
     def test_vehicle_model(self):
@@ -76,7 +76,7 @@ class TestFleet(common.TransactionCase):
         self.odometer2 = self.odometer2.value
 
         self.assertEqual(self.odometer, 1000, "Initial odometer value did not get created correctly")
-        self.assertEqual(self.odometer2, 980, "Second odometer value did not get created correctly")
+        self.assertEqual(self.odometer2, 1200, "Second odometer value did not get created correctly")
         self.assertGreater(self.odometer2, self.odometer, "Second odometer value entered invalid")
 
     def test_assign_driver(self):
