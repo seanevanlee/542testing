@@ -37,14 +37,14 @@ class TestPatient(TransactionCase):
         })
         
     def test_create_patient(self):
-        """Test that patient is created successfully."""
+        """Test that the patient John Test is created successfully."""
         self.assertTrue(self.patient, "Patient should be created successfully")
         self.assertEqual(self.patient.name, 'John Test', "Name field value is incorrect")
         self.assertEqual(self.patient.gender, 'male', "Gender field value is incorrect")
         self.assertEqual(self.patient.age, 18, "Age is incorrect")
 
     def test_age_error(self):
-        """Test that error is thrown when age is 0"""
+        """Test that an error throws when patient age is 0"""
         with self.assertRaises(ValidationError):
             self.patient.age = 0
     
@@ -66,3 +66,6 @@ class TestPatient(TransactionCase):
                 'gender': 'female',
             })
 
+    @classmethod
+    def tearDownClass(cls):
+        super(TestPatient, cls).tearDownClass()
