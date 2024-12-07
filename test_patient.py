@@ -65,7 +65,3 @@ class TestPatient(TransactionCase):
                 'age': 8,
                 'gender': 'female',
             })
-
-    @classmethod
-    def tearDownClass(cls):
-        super(TestPatient, cls).tearDownClass()
